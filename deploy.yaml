@@ -1,0 +1,82 @@
+---
+- name: deploy application
+  hosts: localhost
+  connection: local
+  vars:
+    config_path: /home/vagrant/.kube/config
+    namespace: default
+    app_name: ""
+    host_name: lb.example.com
+
+  tasks:
+  - name: Create a Deployment for "{{ app_name }}"
+    community.kubernetes.k8s:
+      state: present
+        namespace: "{{ namespace }}"
+        kubeconfig: "{{ config_path }}"
+      definition:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: "{{ app_name }}"
+          labels:
+            app: "{{ app_name }}"
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: "{{ app_name }}"
+          template:
+            metadata:
+              labels:
+                app: "{{ app_name }}"
+            spec:
+              containers:
+              - name: "{{ app_name }}"
+                image: "{{ image }}"
+                ports:
+                - containerPort: 8080
+                  name: http
+  - name: Create a Service for "{{ app_name }}"
+    community.kubernetes.k8s:
+      state: present
+      namespace: "{{ namespace }}"
+      kubeconfig: "{{ config_path }}"
+      definition:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ app_name }}"
+          labels:
+            app: "{{ app_name }}"
+        spec:
+          selector:
+            app: "{{ app_name }}"
+          ports:
+          - protocol: TCP
+            targetPort: http
+            name: port-8080-tcp
+            port: 80
+    delegate_to: localhost
+
+  - name: Create a Deployment for "{{ app_name }}"
+    community.kubernetes.k8s:
+    state: present
+    namespace: "{{ namespace }}"
+    kubeconfig: "{{ config_path }}"
+    definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: "{{ app_name }}"
+      spec:
+        rules:
+        - host: "{{ host_name }}"
+          http:
+            paths:
+            - path: /
+              backend:
+                service:
+                  name: "{{ app_name }}"
+                  port:
+                    number: 80
