@@ -12,7 +12,7 @@
   - name: Create a Deployment for "{{ app_name }}"
     community.kubernetes.k8s:
       state: present        
-        kubeconfig: "{{ config_path }}"
+      kubeconfig: "{{ config_path }}"
       definition:
         apiVersion: apps/v1
         kind: Deployment
