@@ -59,7 +59,7 @@
             port: 80
     delegate_to: localhost
 
-  - name: Create a Deployment for "{{ app_name }}"
+  - name: Create a Ingress for "{{ app_name }}"
     community.kubernetes.k8s:
       state: present
       kubeconfig: "{{ config_path }}"
@@ -75,6 +75,7 @@
             http:
               paths:
               - path: /
+                pathType: Prefix
                 backend:
                   service:
                     name: "{{ app_name }}"
