@@ -11,14 +11,14 @@
   tasks:
   - name: Create a Deployment for "{{ app_name }}"
     community.kubernetes.k8s:
-      state: present
-        namespace: "{{ namespace }}"
+      state: present        
         kubeconfig: "{{ config_path }}"
       definition:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
           name: "{{ app_name }}"
+          namespace: "{{ namespace }}"
           labels:
             app: "{{ app_name }}"
         spec:
@@ -40,13 +40,13 @@
   - name: Create a Service for "{{ app_name }}"
     community.kubernetes.k8s:
       state: present
-      namespace: "{{ namespace }}"
       kubeconfig: "{{ config_path }}"
       definition:
         apiVersion: v1
         kind: Service
         metadata:
           name: "{{ app_name }}"
+          namespace: "{{ namespace }}"
           labels:
             app: "{{ app_name }}"
         spec:
@@ -62,13 +62,13 @@
   - name: Create a Deployment for "{{ app_name }}"
     community.kubernetes.k8s:
     state: present
-    namespace: "{{ namespace }}"
     kubeconfig: "{{ config_path }}"
     definition:
       apiVersion: networking.k8s.io/v1
       kind: Ingress
       metadata:
         name: "{{ app_name }}"
+        namespace: "{{ namespace }}"
       spec:
         rules:
         - host: "{{ host_name }}"
