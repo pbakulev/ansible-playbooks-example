@@ -61,22 +61,22 @@
 
   - name: Create a Deployment for "{{ app_name }}"
     community.kubernetes.k8s:
-    state: present
-    kubeconfig: "{{ config_path }}"
-    definition:
-      apiVersion: networking.k8s.io/v1
-      kind: Ingress
-      metadata:
-        name: "{{ app_name }}"
-        namespace: "{{ namespace }}"
-      spec:
-        rules:
-        - host: "{{ host_name }}"
-          http:
-            paths:
-            - path: /
-              backend:
-                service:
-                  name: "{{ app_name }}"
-                  port:
-                    number: 80
+      state: present
+      kubeconfig: "{{ config_path }}"
+      definition:
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: "{{ app_name }}"
+          namespace: "{{ namespace }}"
+        spec:
+          rules:
+          - host: "{{ host_name }}"
+            http:
+              paths:
+              - path: /
+                backend:
+                  service:
+                    name: "{{ app_name }}"
+                    port:
+                      number: 80
