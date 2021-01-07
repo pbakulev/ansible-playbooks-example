@@ -3,7 +3,7 @@
   hosts: localhost
   connection: local
   vars:
-    config_path: /home/vagrant/.kube/config
+    config_path: ""
     namespace: default
     app_name: ""
     host_name: lb.example.com
