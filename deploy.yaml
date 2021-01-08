@@ -82,6 +82,6 @@
                     port:
                       number: 80
   - name: wait for pods to come up
-    shell: kubectl -n "{{ namespace }}" get pods -o json
+    shell: kubectl -n "{{ namespace }}" get pods -o json –-kube-config "{{ config_path }}"
     register: kubectl_get_pods
     until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
