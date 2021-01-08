@@ -81,7 +81,9 @@
                     name: "{{ app_name }}"
                     port:
                       number: 80
-  - name: wait for pods to come up
-    shell: kubectl -n "{{ namespace }}" get pods -o json --kube-config "{{ config_path }}"
-    register: kubectl_get_pods
-    until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
+  - name: Wait until API application is available
+    shell: curl --head --silent -k https://{{ host_name }}/status
+    register: result
+    until: result.stdout.find("200 OK") != -1
+    retries: 12
+    delay: 5
